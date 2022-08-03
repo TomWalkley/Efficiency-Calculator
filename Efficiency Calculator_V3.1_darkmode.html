@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Efficiency Calculator v3.1</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Tom Walkley 30/07/2022">
+<!--bootstrap 5-->
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap-nightshade.min.css" rel="stylesheet">
+  <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!--jquery-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!--Font Awesome 5-->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+<style>
+  body {
+  background-color: powderblue;
+}
+
+i {
+  font-size: 30px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.d-light-inline { display: inline !important; }
+.d-dark-inline { display: none !important; }
+html.dark .d-light-inline { display: none !important; }
+html.dark .d-dark-inline { display: inline !important; }
+</style>
+</head>
+
+<body class="">
+<div class="container-fluid p-4 bg-info text-white text-center clearfix" id="header">
+  <span class="h1">Efficiency Calculator v3.0 </span>
+        <span class="btn-group ms-auto float-end" role="group">
+          <a id="darkmode-button" class="btn btn-outline-warning"><i class="fas fa-lightbulb fa-fw d-none d-light-inline" title="Switch to dark mode"></i><i class="far fa-lightbulb fa-fw d-none d-dark-inline" title="Switch to light mode"></i></a>
+      </span>
+</div>
+
+<div class="container mt-4">
+  <div class="row">
+
+    <div class="col-lg-5">
+<!--Efficiency Calclator-->
+      <div id="effcalc" class="card shadow p-3">
+        <form class="was-validated row g-3">
+          <div class="col-md-6">
+            <label for="hours" class="form-label">Total Time: <a href="#" nav-link" data-bs-toggle="collapse" data-bs-target="#demo1">Calculate?</a></label>
+            <input type="number" class="form-control" id="hours" placeholder="HRS" required>
+          </div>
+          <div class="col-md-6">
+            <label for="minutes" class="form-label invisible">.</label>
+            <input type="number" class="form-control" id="minutes" placeholder="MINS" required>
+          </div>
+          <div class="col-12">
+            <label for="qty" class="form-label">No of Parts Made:</label>
+            <input type="number" class="form-control" id="qty" placeholder="QTY" required>
+          </div>
+          <div class="col-12">
+            <label for="runtime" class="form-label">Run Time on Kit (Per Part):</label>
+            <input type="number" class="form-control" id="runtime" placeholder="MINS" step=".01" required>
+          </div>
+          <div class="d-grid">
+            <button id="button1" type="button" class="btn btn-info text-white rounded-pill btn-block" onclick="myFunction1()">Calculate</button>
+          </div>
+        </form>
+      </div>
+<!--Efficiency Results-->
+      <div id="results" class="card mt-4 shadow invisible">
+        <div class="card-body">You were: <span style="font-weight:bold" id="efficiency"></span> % efficient.</div> 
+        <div class="card-body">To be 100% efficient you needed to make: <span style="font-weight:bold" id="efficient"></span> parts.</div> 
+        <div class="card-body">Based on your inputs, your current run time per part is: <span style="font-weight:bold" id="actualrun"></span> minutes.</div> 
+      </div>
+    </div>
+
+
+    <div class="col-lg-2">
+<!--Blank/Test Column-->
+    </div>
+
+
+    <div id="demo1" class="col-lg-5 collapse">
+<!--Total Time Calculator-->
+      <div id="timecalc" class="card shadow p-3">
+        <form class="was-validated row g-3">
+          <div class="col-md-6">
+            <label for="start-hours" class="form-label">Start Time:</label>
+            <input type="number" class="form-control" id="start-hours" placeholder="HRS" required>
+          </div>
+          <div class="col-md-6">
+            <label for="start-minutes" class="form-label invisible">.</label>
+            <input type="number" class="form-control" id="start-minutes" placeholder="MINS" required>
+          </div>
+          <div class="col-md-6">
+            <label for="finish-hours" class="form-label">Finish Time:</label>
+            <input type="number" class="form-control" id="finish-hours" placeholder="HRS" required>
+          </div>
+          <div class="col-md-6">
+            <label for="finish-minutes" class="form-label invisible">.</label>
+            <input type="number" class="form-control" id="finish-minutes" placeholder="MINS" required>
+          </div>
+          <div class="col-12">
+            <label for="dedutions" class="form-label">Deductions (Tea Break, etc.):</label>
+            <input type="number" class="form-control" id="deductions" placeholder="MINS">
+          </div>
+          <div class="d-grid">
+            <button id="button2" type="button" class="btn btn-info text-white rounded-pill btn-block" onclick="myFunction2()">Calculate</button>
+          </div>
+        </form>
+      </div>
+<!--Total Time Results-->
+      <div id="demo2" class="card mt-4 px-3 pb-3 shadow invisible">
+        <div class="card-body">Your total time is: <span id="total-hours"></span> hours and <span id="total-minutes"></span> minutes.</div> 
+        <div class="d-grid">
+          <button id="button3" type="button" class="btn btn-info text-white rounded-pill btn-block" onclick="myFunction3()">Use Ths time</button>
+        </div>
+      </div>
+    </div>      
+
+  </div><!--Row-->
+</div><!--Container-->
+
+
+<script>
+//Efficiency Calculator
+  function myFunction1() {
+    mins = document.getElementById("minutes").value;
+    hours = document.getElementById("hours").value; 
+    totalTime = (Number(hours) * 60) + Number(mins);    
+    qty = document.getElementById("qty").value;     
+    runtime = document.getElementById("runtime").value;     
+    efficient = totalTime / runtime;
+    actualRun = totalTime / qty;
+    efficiency = (runtime / actualRun) * 100;    
+    document.getElementById("efficient").innerHTML = Math.round (efficient * 100) / 100;    
+    document.getElementById("actualrun").innerHTML = Math.round (actualRun * 100) / 100;
+    document.getElementById("efficiency").innerHTML = Math.round (efficiency * 100) / 100;
+    if (efficiency < 100) {
+      results.className = 'card mt-4 shadow text-white bg-danger visible';
+    }
+    else if (efficiency >= 100) {
+      results.className = 'card mt-4 shadow text-white bg-success visible';
+    }
+    else {
+      results.className = 'card mt-4 shadow bg-warning text-warning invisible';
+    }
+  }
+//Total Time Calculator
+  function myFunction2() {
+    startMins = document.getElementById("start-minutes").value;
+    startHours = document.getElementById("start-hours").value; 
+    startTime = (Number(startHours) * 60) + Number(startMins);
+    finishMins = document.getElementById("finish-minutes").value;
+    finishHours = document.getElementById("finish-hours").value; 
+    finishTime = (Number(finishHours) * 60) + Number(finishMins);
+    deductions = document.getElementById("deductions").value;       
+    totalTimeCalc = finishTime - startTime - deductions;
+    totalHours = Math.floor (totalTimeCalc / 60);
+    totalMinutes = totalTimeCalc % 60;
+    document.getElementById("total-hours").innerHTML = totalHours;
+    document.getElementById("total-minutes").innerHTML = totalMinutes;
+
+    var element = document.getElementById("demo2");
+      element.classList.remove("invisible");
+  }
+//Input Total Time Into Efficiency Calculator
+  function myFunction3() {
+    document.getElementById("hours").value = totalHours;
+    document.getElementById("minutes").value = totalMinutes;
+  }
+</script>
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- DarkMode.js -->
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/js/darkmode.min.js"></script>
+    <script>
+      document.querySelector("#darkmode-button").onclick = function(e){
+        darkmode.toggleDarkMode();
+      }
+</script>
+</body>
+</html>
